@@ -107,7 +107,7 @@ export interface Handshake {
   auth: { [key: string]: any };
 }
 
-type Event = [eventName: string, ...args: any[]];
+export type Event = [eventName: string, ...args: any[]];
 
 export class Socket<
   ListenEvents extends EventsMap = DefaultEventsMap,
@@ -234,6 +234,7 @@ export class Socket<
 
     const timer = setTimeout(() => {
       debug("event with ack id %d has timed out after %d ms", id, timeout);
+      this.acks.delete(id);
       ack.call(this, new Error("operation has timed out"));
     }, timeout);
 
@@ -250,7 +251,7 @@ export class Socket<
    * @return self
    * @public
    */
-  public to(room: Room | Room[]): BroadcastOperator<EmitEvents> {
+  public to(room: Room | Room[]): BroadcastOperator<EmitEvents, SocketData> {
     return this.newBroadcastOperator().to(room);
   }
 
@@ -261,7 +262,7 @@ export class Socket<
    * @return self
    * @public
    */
-  public in(room: Room | Room[]): BroadcastOperator<EmitEvents> {
+  public in(room: Room | Room[]): BroadcastOperator<EmitEvents, SocketData> {
     return this.newBroadcastOperator().in(room);
   }
 
@@ -272,7 +273,9 @@ export class Socket<
    * @return self
    * @public
    */
-  public except(room: Room | Room[]): BroadcastOperator<EmitEvents> {
+  public except(
+    room: Room | Room[]
+  ): BroadcastOperator<EmitEvents, SocketData> {
     return this.newBroadcastOperator().except(room);
   }
 
@@ -576,7 +579,7 @@ export class Socket<
    * @return {Socket} self
    * @public
    */
-  public get broadcast(): BroadcastOperator<EmitEvents> {
+  public get broadcast(): BroadcastOperator<EmitEvents, SocketData> {
     return this.newBroadcastOperator();
   }
 
@@ -586,7 +589,7 @@ export class Socket<
    * @return {Socket} self
    * @public
    */
-  public get local(): BroadcastOperator<EmitEvents> {
+  public get local(): BroadcastOperator<EmitEvents, SocketData> {
     return this.newBroadcastOperator().local;
   }
 
@@ -763,7 +766,7 @@ export class Socket<
     return this._anyListeners || [];
   }
 
-  private newBroadcastOperator(): BroadcastOperator<EmitEvents> {
+  private newBroadcastOperator(): BroadcastOperator<EmitEvents, SocketData> {
     const flags = Object.assign({}, this.flags);
     this.flags = {};
     return new BroadcastOperator(

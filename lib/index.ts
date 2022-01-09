@@ -112,11 +112,13 @@ export class Server<
   /**
    * @private
    */
-  _nsps: Map<string, Namespace<ListenEvents, EmitEvents, ServerSideEvents>> =
-    new Map();
+  _nsps: Map<
+    string,
+    Namespace<ListenEvents, EmitEvents, ServerSideEvents, SocketData>
+  > = new Map();
   private parentNsps: Map<
     ParentNspNameMatchFn,
-    ParentNamespace<ListenEvents, EmitEvents, ServerSideEvents>
+    ParentNamespace<ListenEvents, EmitEvents, ServerSideEvents, SocketData>
   > = new Map();
   private _adapter?: AdapterConstructor;
   private _serveClient: boolean;
@@ -197,7 +199,9 @@ export class Server<
     name: string,
     auth: { [key: string]: any },
     fn: (
-      nsp: Namespace<ListenEvents, EmitEvents, ServerSideEvents> | false
+      nsp:
+        | Namespace<ListenEvents, EmitEvents, ServerSideEvents, SocketData>
+        | false
     ) => void
   ): void {
     if (this.parentNsps.size === 0) return fn(false);
@@ -579,7 +583,7 @@ export class Server<
     fn?: (
       socket: Socket<ListenEvents, EmitEvents, ServerSideEvents, SocketData>
     ) => void
-  ): Namespace<ListenEvents, EmitEvents, ServerSideEvents> {
+  ): Namespace<ListenEvents, EmitEvents, ServerSideEvents, SocketData> {
     if (typeof name === "function" || name instanceof RegExp) {
       const parentNsp = new ParentNamespace(this);
       debug("initializing parent namespace %s", parentNsp.name);
@@ -660,7 +664,7 @@ export class Server<
    * @return self
    * @public
    */
-  public to(room: Room | Room[]): BroadcastOperator<EmitEvents> {
+  public to(room: Room | Room[]): BroadcastOperator<EmitEvents, SocketData> {
     return this.sockets.to(room);
   }
 
@@ -671,7 +675,7 @@ export class Server<
    * @return self
    * @public
    */
-  public in(room: Room | Room[]): BroadcastOperator<EmitEvents> {
+  public in(room: Room | Room[]): BroadcastOperator<EmitEvents, SocketData> {
     return this.sockets.in(room);
   }
 
@@ -682,7 +686,9 @@ export class Server<
    * @return self
    * @public
    */
-  public except(name: Room | Room[]): BroadcastOperator<EmitEvents> {
+  public except(
+    name: Room | Room[]
+  ): BroadcastOperator<EmitEvents, SocketData> {
     return this.sockets.except(name);
   }
 
@@ -738,7 +744,9 @@ export class Server<
    * @return self
    * @public
    */
-  public compress(compress: boolean): BroadcastOperator<EmitEvents> {
+  public compress(
+    compress: boolean
+  ): BroadcastOperator<EmitEvents, SocketData> {
     return this.sockets.compress(compress);
   }
 
@@ -750,7 +758,7 @@ export class Server<
    * @return self
    * @public
    */
-  public get volatile(): BroadcastOperator<EmitEvents> {
+  public get volatile(): BroadcastOperator<EmitEvents, SocketData> {
     return this.sockets.volatile;
   }
 
@@ -760,7 +768,7 @@ export class Server<
    * @return self
    * @public
    */
-  public get local(): BroadcastOperator<EmitEvents> {
+  public get local(): BroadcastOperator<EmitEvents, SocketData> {
     return this.sockets.local;
   }
 
@@ -769,7 +777,7 @@ export class Server<
    *
    * @public
    */
-  public fetchSockets(): Promise<RemoteSocket<EmitEvents>[]> {
+  public fetchSockets(): Promise<RemoteSocket<EmitEvents, SocketData>[]> {
     return this.sockets.fetchSockets();
   }
 
@@ -826,3 +834,4 @@ module.exports.Namespace = Namespace;
 module.exports.Socket = Socket;
 
 export { Socket, ServerOptions, Namespace, BroadcastOperator, RemoteSocket };
+export { Event } from "./socket";
