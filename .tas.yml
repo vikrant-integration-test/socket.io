@@ -1,14 +1,15 @@
----
 framework: mocha
-postMerge:
-  pattern:
-    - "test/socket.io.ts"
+preRun:
+     command:
+        - npm install
+        - npm run compile
 preMerge:
   pattern:
-    - "test/socket.io.ts"
-preRun:
-  - npm ci
-  - npm run compile
+    - "./test/socket.io.ts"
+postMerge:
+  pattern: 
+    - "./test/socket.io.ts"
 postRun:
-  - node --version
-version: 2.0
+     command:
+        - node --version
+version: 1.0
