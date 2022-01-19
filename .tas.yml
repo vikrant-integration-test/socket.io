@@ -2,7 +2,7 @@ framework: mocha
 preRun:
      command:
         - npm install
-        - npm run compile
+        - npm run compile && npm run test:types
 preMerge:
   pattern:
     - "./test/socket.io.ts"
@@ -12,4 +12,5 @@ postMerge:
 postRun:
      command:
         - node --version
+configFile: "mocharc.yml"
 version: 1.0
