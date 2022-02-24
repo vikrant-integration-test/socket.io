@@ -1,5 +1,4 @@
-require: ts-node/register
-reporter: 'spec'
-slow: '200'
-bail: true
-timeout: '10000'
+require:
+  - ts-node/register
+slow: 200
+timeout: 10000
