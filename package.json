@@ -23,7 +23,6 @@
     "lib": "lib/",
     "test": "test/"
   },
-  "type": "module",
   "main": "./dist/index.js",
   "exports": {
     "import": "./wrapper.mjs",
