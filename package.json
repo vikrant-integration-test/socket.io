@@ -11,7 +11,7 @@
     "socket",
     "io"
   ],
-  "type": "commonjs",
+  "type": "module",
   "files": [
     "dist/",
     "client-dist/",
