@@ -11,7 +11,6 @@
     "socket",
     "io"
   ],
-  "type": "module",
   "files": [
     "dist/",
     "client-dist/",
