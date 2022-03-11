@@ -9,7 +9,7 @@ preMerge:
     - "./test/socket.io.ts"
 postMerge:
   pattern: 
-    - "./test/socket.io.ts"
+    - "./test/*.ts"
 postRun:
   command:
     - node --version
